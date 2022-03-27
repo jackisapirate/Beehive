@@ -1,11 +1,19 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Text,
+} from "react-native";
+import React from "react";
+import Start from "./nav/Start";
 
+const { width, height } = Dimensions.get("window");
 export default function App() {
+  const state = { isShowLauncher: true };
+  console.log(state.isShowLauncher);
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Start />
     </View>
   );
 }
@@ -13,8 +21,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

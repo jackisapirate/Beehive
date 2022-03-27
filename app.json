@@ -3,7 +3,7 @@
     "name": "demo1",
     "slug": "demo1",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
