@@ -1,3 +1,4 @@
+![](https://github.com/jackisapirate/Beehive/blob/master/assets/default.png)
 
 ## INTRODUCTION
 honeyBee is a self-care mobile applicattion that brings awareness to self-care activities through reminders throughout the day to drink water, take a break, to breathe etc. Through regular reminders to take care of themselves, users can mitigate their mental health struggles and foster mindfully healthy habits. 
