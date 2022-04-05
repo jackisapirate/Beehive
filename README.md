@@ -11,7 +11,7 @@ honeyBee is a self-care mobile application that brings awareness to self-care ac
 ## CREDITS
 | Member | Role |
 | :---: | :------: |
-|[Muhammad Baig]| Software Developer  
+|[Muhammad Baig](https://github.com/muhammadbaig23)| Software Developer  
 |[Michelle Chheung](https://github.com/michellechheung)| Software Developer  
 |[Kavyalata Kothari]| Software Developer  
 |[Kunlong Wang](https://github.com/jackisapirate)| Software Developer  
