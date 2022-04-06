@@ -8,10 +8,34 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { Component } from "react";
+import { Button, Input } from "@rneui/themed";
+import request from "../utils/request";
+import { ACCOUNT_LOGIN } from "../utils/pathMap";
 
 const { width, height } = Dimensions.get("window");
 export default class Login extends Component {
+  state = {
+    username: "example@gmail.com",
+    password: "123456",
+  }
+  // login input
+  usernameChange = (username) => {
+    this.setState({username});
+    console.log(username);
+  }
+  loginFunc = async() => {
+    console.log("click login button");
+    const{username}=this.state;
+    // const res = await request.post(ACCOUNT_LOGIN, {
+    //   username: "example@gmail.com"
+    // });
+    // console.log(res);
+    console.log(this.state.username);
+  };
+
+
   render() {
+    const{username, password} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.wrap}>
@@ -20,13 +44,16 @@ export default class Login extends Component {
             style={styles.avatar}
           ></Image>
 
-          <TextInput
+          <Input
             style={[styles.textInput, styles.username]}
             placeholder="please input username!"
             placeholderTextColor="#ddd"
             underlineColorAndroid="transparent"
+            onChangeText={this.usernameChange}
+            value={username}
+            onSubmitEditing={this.loginFunc}
           />
-          <TextInput
+          <Input
             style={[styles.textInput, styles.password]}
             secureTextEntry={true}
             placeholder="please input password!"
@@ -34,7 +61,7 @@ export default class Login extends Component {
             underlineColorAndroid="transparent"
           />
 
-          <TouchableOpacity style={styles.loginBtn} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.loginBtn} activeOpacity={0.7} onPress={this.loginFunc}>
             <Text style={styles.loginText}>Log In</Text>
           </TouchableOpacity>
 
@@ -46,6 +73,12 @@ export default class Login extends Component {
               <Text style={styles.textSelection}>Sign Up</Text>
             </TouchableOpacity>
           </View>
+          {/* <View>
+            <Button title="Hello World" />
+          </View>
+          <View>
+            <Input leftIcon={{type: 'font-awesome', name: 'chevron-left'}} />
+          </View> */}
         </View>
       </View>
     );
