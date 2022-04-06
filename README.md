@@ -15,3 +15,17 @@ honeyBee is a self-care mobile application that brings awareness to self-care ac
 |[Michelle Chheung](https://github.com/michellechheung)| Software Developer  
 |[Kavyalata Kothari]| Software Developer  
 |[Kunlong Wang](https://github.com/jackisapirate)| Software Developer  
+
+## Installation
+
+You must have installed the necessary runtime environments: Java, SDK, one Android device/emulator.
+
+In the root directory of the project enter:
+
+~~~cmd
+npm install
+npm start
+~~~
+
+Click the "Run on Android device/emulator" menu on the left side of the browser.
+
