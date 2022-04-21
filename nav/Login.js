@@ -8,19 +8,29 @@ import {
   TouchableOpacity,
   Button,
 } from "react-native";
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { Input } from "react-native-elements";
 import request from "../utils/request";
-import { ACCOUNT_LOGIN } from "../utils/pathMap";
-import validator from "../utils/validator"
+import { ACCOUNT_LOGIN, ACCOUNT_CA } from "../utils/pathMap";
+import validator from "../utils/validator";
+import { NavigationContext } from "@react-navigation/native";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { authentication } from "../firebase/firebase-config";
+import axios from "axios";
+import qs from "qs";
 
 const { width, height } = Dimensions.get("window");
 export default class Login extends Component {
+  constructor(props) {
+    super(props);
+  }
+  static contextType = NavigationContext;
   state = {
-    username: "",
-    password: "",
+    username: "wangkunlong@gmail.com",
+    password: "123456",
     passwordConfirm: "",
-    email: "",
+    email: "email@gmail.com",
+    code: "124",
     emailF: "",
     passwordR: "",
     passwordConfirm: "",
@@ -35,7 +45,9 @@ export default class Login extends Component {
   // login input
   usernameChange = (username) => {
     this.setState({ username });
-    console.log(username);
+  };  
+  passwordChange = (password) => {
+    this.setState({ password });
   };
   emailChange = (emailChange) => {
     this.setState({ email: emailChange });
@@ -47,28 +59,73 @@ export default class Login extends Component {
     this.setState({ passwordConfirm: passwordConfirm });
   };
 
-
   toggleDialog1 = () => {
     console.log("Forgot");
   };
   loginFunc = async () => {
     console.log("click login button");
-    const { username } = this.state;
-    // const res = await request.post(ACCOUNT_LOGIN, {
-    //   username: "example@gmail.com"
+    const { username, password } = this.state;
+
+    // login firebase authentication
+    // signInWithEmailAndPassword(authentication, username, password)
+    // .then((userCredential) => {
+    //   // Signed in
+    //   console.log(userCredential);
+    //   const user = userCredential.user;
+    //   // ...
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    //   const errorCode = error.code;
+    //   const errorMessage = error.message;
+    //   // ..
     // });
-    // console.log(res);
-    console.log(this.state.username);
+
+    // backend ------ java login
+    const res = await request.post(ACCOUNT_LOGIN, qs.stringify(this.state)).then(res => {
+      console.log(res);
+    })
+
+    // const res1 = await request.post(ACCOUNT_CA, {
+    //   "email": username,
+    //   "password": password,
+    // });
+    // console.log(res1);
+
+    // axios.get("http://192.168.1.167:8081/getCaptcha").then(console.log);
+
+
+    // this.context.navigate('UserInfo');
+
+    // console.log(this.state.username);
   };
   registerFunc = async () => {
     console.log("click register button");
     this.emailSubmitEditing();
     this.passwordSubmitEditing();
-    // const res = await request.post(ACCOUNT_LOGIN, {
-    //   username: "example@gmail.com"
-    // });
-    // console.log(res);
-  }
+    const { email, passwordR } = this.state;
+
+    // register
+    createUserWithEmailAndPassword(authentication, email, passwordR)
+      .then((userCredential) => {
+        // Signed in
+        console.log(userCredential);
+        const user = userCredential.user;
+        // ...
+      })
+      .catch((error) => {
+        // console.log(error);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log("code: _ " + errorCode);
+        console.log("message: _ " + errorMessage);
+
+        // code: auth/email-already-in-use
+        // This Email was being in use!
+
+        // ..
+      });
+  };
   resetFunc = async () => {
     console.log("click reset button");
     // const res = await request.post(ACCOUNT_LOGIN, {
@@ -101,36 +158,52 @@ export default class Login extends Component {
     /*
     validate the email
     */
-   const{email} = this.state;
-   emailValid = validator.validatorEmail(email);
-   if(email.length==0){
-    emailValid = false;
-    this.setState({emailAlarm: "Email format can not be blank!"})
-   } else{
-    this.setState({emailAlarm: "Email format is incorrect!"})
-   }
-   this.setState({ emailValid });
-   console.log(emailValid);
-   return;
+    const { email } = this.state;
+    emailValid = validator.validatorEmail(email);
+    if (email.length == 0) {
+      emailValid = false;
+      this.setState({ emailAlarm: "Email format can not be blank!" });
+    } else {
+      this.setState({ emailAlarm: "Email format is incorrect!" });
+    }
+    this.setState({ emailValid });
+    console.log(emailValid);
+    return;
   };
   passwordSubmitEditing = () => {
     /*
     validate two password is match or not
     */
-   const{passwordR, passwordConfirm} = this.state;
-   passwordValid = (passwordR == passwordConfirm);
-   if(passwordR.length==0){
-    passwordValid = false;
-    this.setState({passwordAlarm: "The password can not be blank!"} )
-   } else {
-    this.setState({passwordAlarm: "The two entered passwords do not match!"} )
-   }
-   this.setState({ passwordValid });
-   console.log(passwordValid);
-   return;
+    const { passwordR, passwordConfirm } = this.state;
+    passwordValid = passwordR == passwordConfirm;
+    if (passwordR.length == 0) {
+      passwordValid = false;
+      this.setState({ passwordAlarm: "The password can not be blank!" });
+    } else {
+      this.setState({
+        passwordAlarm: "The two entered passwords do not match!",
+      });
+    }
+    this.setState({ passwordValid });
+    console.log(passwordValid);
+    return;
   };
   render() {
-    const { username, password, passwordR, passwordConfirm, email, emailF, showForgot, showLogin, showRegister, emailValid, passwordValid, emailAlarm, passwordAlarm }=this.state;
+    const {
+      username,
+      password,
+      passwordR,
+      passwordConfirm,
+      email,
+      emailF,
+      showForgot,
+      showLogin,
+      showRegister,
+      emailValid,
+      passwordValid,
+      emailAlarm,
+      passwordAlarm,
+    } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.wrap}>
@@ -156,6 +229,7 @@ export default class Login extends Component {
                 placeholderTextColor="#ddd"
                 underlineColorAndroid="transparent"
                 name="password"
+                onChangeText={this.passwordChange}
               />
 
               <TouchableOpacity
@@ -169,11 +243,6 @@ export default class Login extends Component {
               <View style={styles.btns}>
                 <TouchableOpacity onPress={this.changeShowForgot}>
                   <Text style={styles.textSelection}>Forgot Password?</Text>
-                  {/* <Button
-                    title="Open Simple Dialog"
-                    onPress={this.toggleDialog1}
-                    buttonStyle={styles.button}
-                  /> */}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this.changeShowRegister}>
                   <Text style={styles.textSelection}>Sign Up</Text>
@@ -184,7 +253,7 @@ export default class Login extends Component {
             <></>
           )}
 
-{showRegister ? (
+          {showRegister ? (
             <View>
               <Input
                 style={[styles.textInput, styles.username]}
@@ -235,12 +304,9 @@ export default class Login extends Component {
             </View>
           ) : (
             <></>
-          )} 
- 
- 
- 
- 
- {showForgot ? (
+          )}
+
+          {showForgot ? (
             <View>
               <Input
                 style={[styles.textInput, styles.username]}
@@ -284,8 +350,6 @@ export default class Login extends Component {
           ) : (
             <></>
           )}
-
-
         </View>
       </View>
     );
@@ -295,16 +359,13 @@ export default class Login extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#fff",
     backgroundColor: "#5F9E40",
     alignItems: "center",
     flexDirection: "column",
-    // justifyContent: "center",
   },
   wrap: {
     width: "80%",
     height: height,
-    // backgroundColor: "dodgerblue",
     backgroundColor: "#5F9E40",
     marginTop: "5.5%",
   },
@@ -328,14 +389,12 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: "skyblue",
     borderRadius: 4,
-    // marginTop: 20,
   },
   loginBtnReset: {
     width: "100%",
     height: 30,
     backgroundColor: "red",
     borderRadius: 4,
-    // marginTop: 20,
   },
   loginText: {
     textAlign: "center",
